@@ -62,6 +62,13 @@ fail() {
     exit 1
 }
 
+# Ensure that tests are run far in the future to ensure that time overrides work
+# as intended.
+if [[ "$(uname -s)" == Linux ]]; then
+    sudo date -s '+200 year'
+    trap "sudo date -s '-200 year'" EXIT
+fi
+
 echo "Checking validation of a valid certificate"
 keyless_connect 2019-01-01T00:00:00Z ||
     fail "Should pass on a valid certificate"
